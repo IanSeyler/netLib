@@ -1,0 +1,972 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+
+<head>
+	<title>netLib v0.4 Documentation</title>
+</head>
+
+<body>
+	<div id="container">
+
+		<a name="content"></a>
+		<div id="content-wrap">
+			<div id="center">
+				<div id="center-in">
+
+<!-- START BODY CONTENT -->
+
+<H1>netLib v0.4 Documentation</H1>
+<p>
+v0.4 - 2007.08.30<p>
+Coded by Ian Seyler (iseyler@gmail.com)<p>
+<a href="http://bubbai.ath.cx/projects/netlib/">http://bubbai.ath.cx/projects/netlib/</a><p>
+<p>
+<br />
+<p>
+<b>The latest documentation is available online at <a href="http://bubbai.ath.cx/projects/netlib/manual.html">http://bubbai.ath.cx/projects/netlib/manual.html</a></b><p>
+<p>
+<br />
+<br />
+<p>
+
+<h2><u>Table of Contents</u></h2>
+<ul class="list" type=disc>
+	<li><a href="#usage">Usage</a></li>
+		<ul class="list" type=disc>
+			<li><a href="#CompileWindows">Compiling on Windows</a></li>
+			<li><a href="#CompileUnix">Compiling on Unix</a></li>
+			<li><a href="#CompileBeOS">Compiling on BeOS</a></li>
+			<li><a href="#Verbose">Verbose Options</a></li>
+		</ul>
+	<li><a href="#structures">Structures</a></li>
+		<ul class="list" type=disc>
+			<li><a href="#netSocket">netSocket</a></li>
+			<li><a href="#netBuffer">netBuffer</a></li>
+		</ul>
+	<li><a href="#functionlist">Function List</a></li>
+		<ul class="list" type=disc>
+			<li><a href="#netSocket">netSocket Functions</a></li>
+				<ul class="list" type=disc>
+					<li><a href="#netInit">netInit</a></li>
+					<li><a href="#netStop">netStop</a></li>
+					<li><a href="#netInitSocket">netInitSocket</a></li>
+					<li><a href="#netConnect">netConnect</a></li>
+					<li><a href="#netDisconnect">netDisconnect</a></li>
+					<li><a href="#netListen">netListen</a></li>
+					<li><a href="#netAccept">netAccept</a></li>
+					<li><a href="#netIsDataPending">netIsDataPending</a></li>
+					<li><a href="#netSend">netSend</a></li>
+					<li><a href="#netRecv">netRecv</a></li>
+					<li><a href="#netSetTimeout">netSetTimeout</a></li>
+					<li><a href="#netSetOption">netSetOption</a></li>
+				</ul>
+			<li><a href="#netBuffer">netBuffer Functions</a></li>
+				<ul class="list" type=disc>
+					<li><a href="#netInitBuffer">netInitBuffer</a></li>
+					<li><a href="#netSendBuffer">netSendBuffer</a></li>
+					<li><a href="#netRecvBuffer">netRecvBuffer</a></li>
+					<li><a href="#netBufferAppendInt8">netBufferAppendInt8</a></li>
+					<li><a href="#netBufferAppendInt16">netBufferAppendInt16</a></li>
+					<li><a href="#netBufferAppendInt32">netBufferAppendInt32</a></li>
+					<li><a href="#netBufferAppendString">netBufferAppendString</a></li>
+					<li><a href="#netBufferAppendData">netBufferAppendData</a></li>
+					<li><a href="#netBufferRemoveInt8">netBufferRemoveInt8</a></li>
+					<li><a href="#netBufferRemoveInt16">netBufferRemoveInt16</a></li>
+					<li><a href="#netBufferRemoveInt32">netBufferRemoveInt32</a></li>
+					<li><a href="#netBufferRemoveString">netBufferRemoveString</a></li>
+					<li><a href="#netBufferRemoveData">netBufferRemoveData</a></li>
+					<li><a href="#netBufferClear">netBufferClear</a></li>
+				</ul>
+			
+		</ul>
+	<li><a href="#example">Example of using netLib</a></li>
+		<ul class="list" type=disc>
+			<li><a href="#demoserver">Server</a></li>
+			<li><a href="#democlient">Client</a></li>
+		</ul>
+	<li><a href="#chat">Chat program using netLib</a></li>
+		<ul class="list" type=disc>
+			<li><a href="#chatserver">Chat Server</a></li>
+			<li><a href="#chatclient">Chat Client</a></li>
+			<li><a href="#chatexample">Example of usage</a></li>
+				<ul class="list" type=disc>
+					<li><a href="#chatserverexample">Server</a></li>
+					<li><a href="#chatclient1example">Client 1</a></li>
+					<li><a href="#chatclient2example">Client 2</a></li>
+				</ul>
+		</ul>
+</ul>
+<br />
+
+
+<p>
+<a name="usage"></a><h2><u>Usage:</u></h2><p>
+netLib was verified to work with different versions of the GCC compiler. Tested OS's were Windows (2000, XP, and Vista), Mac OS X (10.3 and 10.4), BeOS 5, *BSD (OpenBSD 3.8), and Linux (Fedora 7, Ubuntu 7.04, and Debian 4.0).<p>
+Make sure to include <b>netSocket.h</b> in the <b>yournetapp.c</b> source file (as well as <b>netBuffer.h</b> if you intend to use the buffer functions).
+<br /><br />
+
+
+<ul class="list" type=disc>
+
+<a name="CompileWindows"></a><li><h3>Compiling on Windows</h3></li><p>
+<pre class="code">
+gcc <b>yournetapp.c</b> netSocket.c -o <b>yournetapp</b> -DMS_WINDOWS -L../lib/win32 -lwsock32
+</pre>
+<br />
+
+<a name="CompileUnix"></a><li><h3>Compiling on Unix</h3></li><p>
+This is used for all unix-based systems (Mac OS X, Linux, FreeBSD, etc).
+<pre class="code">
+gcc <b>yournetapp.c</b> netSocket.c -o <b>yournetapp</b> -DUNIX
+</pre>
+<br />
+
+<a name="CompileBeOS"></a><li><h3>Compiling on BeOS</h3></li><p>
+This is used for compiling on a standard BeOS system (net_server).
+<pre class="code">
+gcc <b>yournetapp.c</b> netSocket.c -o <b>yournetapp</b> -DBEOS
+</pre>
+<p>
+This is used for compiling on a BeOS system with BONE (Be OS Network Enviroment).
+<pre class="code">
+gcc <b>yournetapp.c</b> netSocket.c -o <b>yournetapp</b> -DBEOS -lsocket
+</pre>
+<br />
+
+<a name="Verbose"></a><li><h3>Verbose Options</h3></li><p>
+With an additional flag to the compiler you can set the verbose option. By default, the library is set to a silent mode (Verbose level 0). Verbose level 1 will show the function names as they run as well as any error messages. Verbose level 2 shows the same messages as level 1 in addition to debugging information.
+<pre class="code">
+-DnlVerbose=1
+</pre>
+<br />
+
+</ul>
+
+
+<p>
+<a name="structures"></a><h2><u>Structures:</u></h2><p>
+These two main structures are used by the netLib fuctions. The variables in these functions are modified by the netLib functions and should not be modified directly by the user.
+<br /><br />
+
+
+<ul class="list" type=disc>
+
+<a name="netSocket"></a><li><h3>netSocket</h3></li><p>
+Declared in <b>netSocket.h</b>
+<pre class="codeheader">
+struct netSocketStruct {
+	int number; // the socket descriptor from the socket() call
+	int inuse; // 1 for active, 0 for not active
+	int retval; // all functions will update this variable with the function return value
+	struct timeval timeout; // timeout value
+	struct sockaddr_in addr; // connector's address information
+};
+</pre>
+<p>
+number : The internal number of the socket<p>
+inuse : A boolean value for indicating wether the socket is in use (connected) or not. 1 is active.<p>
+retval : Whenever a netLib function is run on the socket it will place the return value here.<p>
+timeout : This is the timeout value for the socket. The default value is 0.1 seconds but it can be changed with netSetTimeout.<p>
+addr : The internal values for the socket.<p>
+<b>Example:</b>
+<pre class="code">
+netSocket *clientsocket[15]; <font color=#006600>// create an array of 15 netSockets</font>
+</pre>
+<br />
+
+<a name="netBuffer"></a><li><h3>netBuffer</h3></li><p>
+Declared in <b>netBuffer.h</b>
+<pre class="codeheader">
+struct netBufferStruct {
+	int size; // allocated size in bytes of the buffer
+	int readAt; // location in buffer where we are currently reading
+	int writeAt; // location in buffer where we are currently writing
+	char complete; // set to 1 when we have completed the buffer
+	short datalength; // the length of the data in the buffer
+	unsigned char *data; // pointer to the data
+	unsigned char *lenptr; // pointer to datalength (same as *data)
+	unsigned char *dataptr; // pointer to the start of the actual data (*data + 2)
+};
+</pre>
+<p>
+size : The size of the data buffer. This value should not be changed after the netInitBuffer is run.<p>
+readAt : The current location in the buffer that we are reading from.<p>
+writeAt : The current location in the buffer that we are writing to.<p>
+complete : A boolean value for indicating wether or not the buffer is complete. 1 is complete.<p>
+datalength : The length of the total amount of data in the buffer<p>
+*data : A pointer to where the data is located in memory.<p>
+*lenptr : A pointer to the data length value (same as *data).<p>
+*dataptr : A pointer to the actual data (same as *data+2).<p>
+<b>Example:</b>
+<pre class="code">
+netBuffer *databuffer; <font color=#006600>// create a netBuffer</font>
+</pre>
+<br />
+
+</ul>
+
+
+<p>
+<a name="functionlist"></a><h2><u>Function List:</u></h2><p>
+This list contains the netLib functions, along with a short description and example of each. These functions are broken down between two source files (netSocket and netBuffer). netSocket contains all of the basic functions to connect, disconnect, listen, accept, send and receive. netBuffer contains all of the functions to utilize the sending, receiving, packing and unpacking of buffers. netSocket can be used by itself if the user does not intend to use netBuffers.
+<br /><br />
+
+
+<ul class="list">
+
+<a name="netSocket"></a><li><h3>netSocket</h3></li><p>
+The netSocket functions of netLib are primary ones that are used. This encompases all of the nesicary functions for connecting, disconnecting, listening, and accepting sockets as well as basic sending and receiving of data. These functions are defined in <b>netSocket.h</b><br /><br /><p>
+<ul class="list">
+
+<a name="netInit"></a><li><h4>netInit</h4></li><p>
+<pre class="codeheader">
+<b>int netInit ();</b>
+Entry    : nothing
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Initiate the netLib library. This function runs extra code to start Winsock, if it is being run on a Windows-based machine.<br />
+<b>Example:</b>
+<pre class="code">
+netInit();
+</pre>
+<br />
+
+<a name="netStop"></a><li><h4>netStop</h4></li><p>
+<pre class="codeheader">
+<b>int netStop ();</b>
+Entry    : nothing
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Stop the netLib library. This function runs extra code to stop Winsock if it is being run on a Windows-based machine.<br />
+<b>Example:</b>
+<pre class="code">
+netStop();
+</pre>
+<br />
+
+<a name="netInitSocket"></a><li><h4>netInitSocket</h4></li><p>
+<pre class="codeheader">
+<b>netSocket* netInitSocket ();</b>
+Entry    : nothing
+Returns  : a pointer to a netSocket, NULL on error
+</pre>
+<p>
+Initiate a new netSocket. <img src="images/important.png" alt="Important" /><b>You must initialize the netSocket before using it!</b> Note that all netSockets are pointers.<br />
+<b>Example:</b>
+<pre class="code">
+netSocket *tempsocket; <font color=#006600>// create a netSocket</font>
+tempsocket = netInitSocket(); <font color=#006600>// Initialize the netSocket. Initialization is required!!</font>
+</pre>
+<br />
+
+<a name="netConnect"></a><li><h4>netConnect</h4></li><p>
+<pre class="codeheader">
+<b>int netConnect(netSocket *netSock, const char *address, unsigned short port);</b>
+Entry    : netSocket *netSock = Socket to connect
+           const char *address = Character string of the destination (eg: "bubbai.ath.cx" or "192.168.0.1")
+           unsigned short port = The port on the destination to connect to
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Connect a netSocket to the specified destination. The second argument is the destination. This can be a name or an IP address. The second argument is the destination port. The computer you are connecting to must be listening on this port.
+<p>
+<b>Example:</b>
+<pre class="code">
+if (netConnect(tempsocket, "bubbai.ath.cx", 80) == netOK) <font color=#006600>// Connects tempsocket to bubbai.ath.cx on port 80</font>
+	printf("Connection Sucessful!");
+else
+	printf("Error: Could not connect to host.");
+</pre>
+<br />
+
+<a name="netDisconnect"></a><li><h4>netDisconnect</h4></li><p>
+<pre class="codeheader">
+<b>int netDisconnect (netSocket *netSock);</b>
+Entry    : netSocket *netSock = The socket to disconnect
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Disconnect a netSocket.<br />
+<b>Example:</b>
+<pre class="code">
+netDisconnect(tempsocket);
+</pre>
+<br />
+
+<a name="netListen"></a><li><h4>netListen</h4></li><p>
+<pre class="codeheader">
+<b>int netListen (netSocket *netSock, unsigned short port);</b>
+Entry    : netSocket *netSock = Socket to listen on
+           unsigned short port = Port number to listen on
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Listen on a specified netSocket.<br />
+<b>Example:</b>
+<pre class="code">
+netListen(listensocket, 8192); <font color=#006600>// Set the netSocket to listen on port 8192</font>
+</pre>
+<br />
+
+<a name="netAccept"></a><li><h4>netAccept</h4></li><p>
+<pre class="codeheader">
+<b>int netAccept (netSocket *listenSock, netSocket *netSock);</b>
+Entry    : netSocket *listenSock = The listening socket
+           netSocket *netSock = The netSocket that has just connected
+Returns  : 1 on an accepted connection, 0 on nothing to accept, -1 on error
+</pre>
+<p>
+Accept a connection from a listening port. netAccept returns a valid open connection to the netSocket in the second argument.<br />
+<b>Example:</b>
+<pre class="code">
+netAccept(listensocket, tempsocket); <font color=#006600>// Accept a connection from the listening netSocket</font>
+</pre>
+<br />
+
+<a name="netIsDataPending"></a><li><h4>netIsDataPending</h4></li><p>
+<pre class="codeheader">
+<b>int netIsDataPending (netSocket *netSock);</b>
+Entry    : netSocket *netSock = The socket to check
+Returns  : 1 if data is pending, 0 if no data is pending
+</pre>
+<p>
+Checks if a netSocket is waiting for action. This command will give a return value of 0 if the socket is not waiting, and a value of 1 if the socket is waiting.<br />
+<b>Example:</b>
+<pre class="code">
+if (netIsDataPending(tempsocket) == 1) <font color=#006600>// Checks if tempsocket has data that is pending to be read</font>
+	printf("The socket has data");
+else
+	printf("The socket has no data");
+</pre>
+<br />
+
+<a name="netSend"></a><li><h4>netSend</h4></li><p>
+<pre class="codeheader">
+<b>int netSend (netSocket *netSock, char *data, int bytes);</b>
+Entry    : netSocket *netSock = Socket to send data to
+           char *data = Pointer to a character string, this is the data that will be transfered
+           int bytes = the number of bytes to send starting at *data
+Returns  : number of bytes that were sent, -1 on error
+</pre>
+<p>
+Send a number of bytes to a netSocket.<br />
+<b>Example:</b>
+<pre class="code">
+netSend(tempsocket, "Hello, World!\0", 14); <font color=#006600>// Sends the 14 byte message to tempsocket</font>
+</pre>
+<br />
+
+<a name="netRecv"></a><li><h4>netRecv</h4></li><p>
+<pre class="codeheader">
+<b>int netRecv (netSocket *netSock, char *data, int bytes);</b>
+Entry    : netSocket *netSock = Socket to receive data from
+           char *data = Pointer to a character string, this is where the data will be stored
+           int bytes = the number of bytes to receive
+Returns  : number of bytes that were received, -1 on error
+</pre>
+<p>
+Receive a number of bytes from a netSocket. Puts the received data into the string data. Make sure you have enough room.<br />
+<b>Example:</b>
+<pre class="code">
+netRecv(tempsocket, string, 14); <font color=#006600>// Reads 14 bytes from tempsocket and places the data into string</font>
+</pre>
+<br />
+
+<a name="netSetTimeout"></a><li><h4>netSetTimeout</h4></li><p>
+<pre class="codeheader">
+<b>int netSetTimeout (netSocket *netSock, float timeoutvalue);</b>
+Entry    : netSocket *netSock = The socket to set
+           float timeoutvalue = The new timeout value
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Sets the timeout value on a netSocket. timeoutvalue is given in seconds.<br />
+<b>Example:</b>
+<pre class="code">
+netSetTimeout(tempsocket, 1.0); <font color=#006600>// Sets the timout on tempsocket to one second</font>
+</pre>
+<br />
+
+<a name="netSetOption"></a><li><h4>netSetOption</h4></li><p>
+<pre class="codeheader">
+<b>int netSetOption (netSocket *netSock, int option, int enable);</b>
+Entry    : netSocket *netSock = The socket to set
+           int option = The option to set
+           int enable = 1 for enable, 0 for disable
+Returns  : 0 on success, -1 on failure
+</pre>
+<p>
+Set an option on a netSocket.
+<center><p><b>Available options for netSetOption by Operating System</b></center>
+<table summary="Available options for netSetOption">
+	<thead>
+	<tr class="odd">
+		<td class="column1"></td>
+		<th scope="col" abbr="Windows">Windows</th>
+		<th scope="col" abbr="Unix">Unix</th>
+		<th scope="col" abbr="BeOS">BeOS</th>
+		<th scope="col" abbr="BeOSBone">BeOS BONE</th>
+	</tr>
+	</thead>
+	<tbody>
+ 	<tr>
+		<th scope="row" class="column1">netDontRoute</th>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+	</tr>
+ 	<tr class="odd">
+		<th scope="row" class="column1">netNagleAlgorithm</th>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/no.png" alt="No" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+	</tr>
+ 	<tr>
+		<th scope="row" class="column1">netDebug</th>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+	</tr>
+ 	<tr class="odd">
+		<th scope="row" class="column1">netNonBlocking</th>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+		<td><img src="images/yes.png" alt="Yes" width="16" height="16" /></td>
+	</tr>
+	</tbody>
+</table>
+
+<br />
+<b>Example:</b>
+<pre class="code">
+netSetOption(tempsocket, netNagleAlgorithm, netEnable); <font color=#006600>// Sets the Nagle Algorithm to be enabled on tempsocket</font>
+</pre>
+<br />
+
+</ul>
+
+<a name="netBuffer"></a><li><h3>netBuffer</h3></li><p>
+The netBuffer portion of netLib contains functions for the sending, receiving, packing and unpacking of netBuffers. These netBuffers can be used to send binary data between computers. These functions also take endianess into consideration for when different architectures (Intel and PPC) are communicating with each other. These functions are defined in <b>netBuffer.h</b><br /><br /><p>
+<ul class="list">
+
+<a name="netInitBuffer"></a><li><h4>netInitBuffer</h4></li><p>
+<pre class="codeheader">
+<b>netBuffer* netInitBuffer (int size);</b>
+Entry    : int size = The size in bytes of the buffer
+Returns  : a pointer to a netBuffer, NULL on error
+</pre>
+<p>
+Initiate a new netBuffer. <img src="images/important.png" alt="Important" /><b>You must initialize the netBuffer before using it!</b> Note that all netBuffers are pointers.<br />
+<b>Example:</b>
+<pre class="code">
+netBuffer *tempbuffer; <font color=#006600>// create a netBuffer</font>
+tempbuffer = netInitBuffer(128); <font color=#006600>// Initialize a 128 byte netBuffer. Initialization is required!!</font>
+</pre>
+<br />
+
+<a name="netSendBuffer"></a><li><h4>netSendBuffer</h4></li><p>
+<pre class="codeheader">
+<b>int netSendBuffer (netSocket *netSock, netBuffer *netBuff);</b>
+Entry    : netSocket *netSock = The socket to send to
+           netBuffer *netBuff = The buffer to be sent out
+Returns  : number of bytes that were sent, -1 on error
+</pre>
+<p>
+Send data from a netBuffer to a netSocket. netSendBuffer will send the entire buffer unless an error occurs.<br />
+<b>Example:</b>
+<pre class="code">
+netSendBuffer(tempsocket, tempbuffer); <font color=#006600>// Sends the netBuffer tempbuffer to tempsocket</font>
+</pre>
+<br />
+
+<a name="netRecvBuffer"></a><li><h4>netRecvBuffer</h4></li><p>
+<pre class="codeheader">
+<b>int netRecvBuffer (netSocket *netSock, netBuffer *netBuff);</b>
+Entry    : netSocket *netSock = The socket to receive from
+           netBuffer *netBuff = The buffer where the incoming data will be stored
+Returns  : number of bytes that were received, -1 on error
+</pre>
+<p>
+Receive data from a netSocket to a netBuffer. netRecvBuffer will receive the entire buffer unless an error occurs.<br />
+<b>Example:</b>
+<pre class="code">
+netRecvBuffer(tempsocket, tempbuffer); <font color=#006600>// Receives the netBuffer tempbuffer from tempsocket</font>
+</pre>
+<br />
+
+<a name="netBufferAppendInt8"></a><li><h4>netBufferAppendInt8</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferAppendInt8(netBuffer *netBuff, char data);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer data will be stored
+           char data = The integer to store
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Pack an 8-bit integer into a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+netBufferAppendInt8(tempbuffer, 7);
+</pre>
+<br />
+
+<a name="netBufferAppendInt16"></a><li><h4>netBufferAppendInt16</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferAppendInt16(netBuffer *netBuff, short data);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer data will be stored
+           short data = The integer to store
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Pack a 16-bit integer into a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+netBufferAppendInt16(tempbuffer, 24023);
+</pre>
+<br />
+
+<a name="netBufferAppendInt32"></a><li><h4>netBufferAppendInt32</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferAppendInt32(netBuffer *netBuff, int data);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer data will be stored
+           int data = The integer to store
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Pack a 32-bit integer into a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+netBufferAppendInt32(tempbuffer, 2196843743);
+</pre>
+<br />
+
+<a name="netBufferAppendString"></a><li><h4>netBufferAppendString</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferAppendString (netBuffer *netBuff, const char *data);</b>
+Entry    : netBuffer *netBuff = The buffer where the string will be stored
+           const char *data = The string to store
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Pack a string into a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+netBufferAppendString(tempbuffer, "This is a test");
+</pre>
+<br />
+
+<a name="netBufferAppendData"></a><li><h4>netBufferAppendData</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferAppendData (netBuffer *netBuff, const char *data, int bytes);</b>
+Entry    : netBuffer *netBuff = The buffer where the data will be stored
+           const char *data = The data to store
+           int bytes = The number of bytes to store
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Pack raw data into a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+unsigned char rawdata[4] = {0xBA, 0xBE, 0x0D, 0xAD};
+netBufferAppendData(tempbuffer, rawdata, 4);
+</pre>
+<br />
+
+<a name="netBufferRemoveInt8"></a><li><h4>netBufferRemoveInt8</h4></li><p>
+<pre class="codeheader">
+<b>char netBufferRemoveInt8 (netBuffer *netBuff);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer is stored
+Returns  : the 8-bit integer, -1 on error (not a reliable error number)
+</pre>
+<p>
+Unpack an 8-bit integer from a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+char tchar;
+tchar = netBufferRemoveInt8(tempbuffer);
+</pre>
+<br />
+
+<a name="netBufferRemoveInt16"></a><li><h4>netBufferRemoveInt16</h4></li><p>
+<pre class="codeheader">
+<b>short netBufferRemoveInt16(netBuffer *netBuff);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer is stored
+Returns  : the 16-bit integer, -1 on error (not a reliable error number)
+</pre>
+<p>
+Unpack a 16-bit integer from a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+short tshort;
+tshort = netBufferRemoveInt16(tempbuffer);
+</pre>
+<br />
+
+<a name="netBufferRemoveInt32"></a><li><h4>netBufferRemoveInt32</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferRemoveInt32(netBuffer *netBuff);</b>
+Entry    : netBuffer *netBuff = The buffer where the integer is stored
+Returns  : the 32-bit integer, -1 on error (not a reliable error number)
+</pre>
+<p>
+Unpack a 32-bit integer from a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+int tint;
+tint = netBufferRemoveInt32(tempbuffer);
+</pre>
+<br />
+
+<a name="netBufferRemoveString"></a><li><h4>netBufferRemoveString</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferRemoveString (char *data, netBuffer *netBuff);</b>
+Entry    : char *data = Where the string will be unpacked to
+           netBuffer *netBuff = The buffer where the string is stored
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Unpack a string from a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+char tempstring[128];
+netBufferRemoveString(tempstring, tempbuffer);
+</pre>
+<br />
+
+<a name="netBufferRemoveData"></a><li><h4>netBufferRemoveData</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferRemoveData (netBuffer *netBuff, const char *data, int bytes);</b>
+Entry    : char *data = Where the data will be unpacked to
+           netBuffer *netBuff = The buffer where the data is stored
+           int bytes = The number of bytes to copy
+Returns  : 0 on success, -1 on error
+</pre>
+<p>
+Unpack raw data from a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+unsigned char rawdata[4];
+netBufferRemoveData(rawdata, tempbuffer, 4);
+</pre>
+<br />
+
+<a name="netBufferClear"></a><li><h4>netBufferClear</h4></li><p>
+<pre class="codeheader">
+<b>int netBufferClear(netBuffer *netBuff);</b>
+Entry    : netBuffer *netBuff = The buffer to be cleared
+Returns  : 0 on success
+</pre>
+<p>
+Clear a netBuffer.
+<br />
+<b>Example:</b>
+<pre class="code">
+netBufferClear(tempbuffer);
+</pre>
+<br />
+
+</ul>
+
+</ul>
+
+
+<p>
+<a name="example"></a><h2><u>Example of using netLib:</u></h2><p>
+These two sample programs are very simple demos of netLib. These simple examples do not do any error checking.
+<br />
+
+<a name="demoserver"></a><h3>Server</h3>
+<pre class="code">
+<font color=#006600>/* A simple server for netLib. */</font>
+
+#include "netSocket.h"
+
+void main()
+{
+	netSocket *listensocket, *clientsocket;
+	char message[20]="Testing 1..2..3..";
+
+	netInit(); <font color=#006600>// Start the netLib library</font>
+
+	listensocket = netInitSocket();
+	clientsocket = netInitSocket();
+
+	netListen(listensocket, 8123); <font color=#006600>// Set the server to listen on port 8123</font>
+
+	while(netAccept(listensocket, clientsocket) != 1)
+	{
+		printf("\nWaiting for client...");
+	}
+
+	netSend(clientsocket, message, sizeof(message));
+
+	netDisconnect(clientsocket);
+	netDisconnect(listensocket);
+	
+	netStop();
+}
+</pre>
+<br />
+<p>
+
+<a name="democlient"></a><h3>Client</h3>
+<pre class="code">
+<font color=#006600>/* A simple client for netLib. */</font>
+
+#include "netSocket.h"
+
+void main()
+{
+	netSocket *serversocket;
+	char incomingdata[20];
+
+	netInit(); <font color=#006600>// Start the netLib library</font>
+
+	serversocket = netInitSocket();
+
+	netConnect(serversocket, "127.0.0.1", 8123); <font color=#006600>// Assume server is running on same machine</font>
+
+	netRecv(serversocket, incomingdata, sizeof(incomingdata));
+
+	printf("\nGot '%s' from server", incomingdata);
+	
+	netDisconnect(serversocket);
+	
+	netStop();
+}
+</pre>
+<p>
+<br />
+
+<p>
+<a name="chat"></a><h2><u>Chat program using netLib:</u></h2><p>
+The Chat program was written using netLib for all network-related communication. The chat server is able to support multiple simultaneous client connections. Full source code is included with the netLib distribution.
+<br />
+<p>
+
+<a name="chatserver"></a><h3>Chat Server</h3>
+<p>
+The chat server does not require any arguments. Just start the executable. The chat server will wait for incoming client connections and accept messages from them. It will then send these messages to the other connected clients.
+<pre class="console">
+chatserver «ENTER»
+
+Chat Server v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+<blink>_</blink>
+</pre>
+<br />
+<p>
+
+<a name="chatclient"></a><h3>Chat Client</h3>
+<p>
+The chat client must be started twice, once for the listening mode window (to see what other users are typing) and once for the speaking mode window (so you can type to the other clients). The arguments for chat are "<b>chat hostname [-listen or -speak]</b>" where hostname is the name or IP address of the chat server. In the following examples "localhost" is used as the chat server is running on the local computer.<p>
+<b>For listen mode:</b>
+<pre class="console">
+chat localhost -l «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Listen mode
+
+Connecting to chat server... OK!
+<blink>_</blink>
+</pre>
+<p>
+<b>For speak mode:</b>
+<pre class="console">
+chat localhost -s «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Speak mode
+
+Enter your nickname (Max 8 chars): Ian
+Your nickname is 'Ian'
+
+Connecting to chat server... OK!
+
+Say: <blink>_</blink>
+</pre>
+<br />
+<p>
+
+<a name="chatexample"></a><h3>Example of usage</h3>
+<p>
+<a name="chatserverexample"></a><h4>Server</h4>
+<p>
+The server will show a log of client connections and message transfers. You can use Control+C to stop the chat server.
+<pre class="console">
+chatserver «ENTER»
+
+Chat Server v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Got a connection. Client is 1 --> Listen mode
+Got a connection. Client is 2 --> Speak mode : Ian. Sending server message to clients.
+Got a connection. Client is 3 --> Listen mode
+Got a connection. Client is 4 --> Speak mode : Caroline. Sending server message to clients.
+Message received from client 2. Sending message to clients.
+Message received from client 4. Sending message to clients.
+Message received from client 2. Sending message to clients.
+Message received from client 4. Sending message to clients.
+Message received from client 2. Sending message to clients.
+Message received from client 4. Sending message to clients.
+Message received from client 2. Sending message to clients.
+Message received from client 4. Sending message to clients.^C
+</pre>
+<br />
+<p>
+
+<a name="chatclient1example"></a><h4>Client 1</h4>
+<p>
+<b>Listen mode:</b>
+<pre class="console">
+chat localhost -l «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Listen mode
+
+Connecting to chat server... OK!
+
+CHANSERV: Ian has joined the chat.
+CHANSERV: Caroline has joined the chat.
+Ian     : Hello Caroline!
+Caroline: Hi Ian.. hows it going?
+Ian     : ok.. you?
+Caroline: I'm pregnant!
+Ian     : cool.. well cya later!
+Caroline: bye
+CHANSERV: Ian has left the chat.
+^C
+</pre>
+<p>
+
+<b>Speak mode:</b>
+<pre class="console">
+chat localhost -s «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Speak mode
+
+Enter your nickname (Max 8 chars): Ian
+Your nickname is 'Ian'
+
+Connecting to chat server... OK!
+
+Say: Hello Caroline!
+Say: ok.. you?
+Say: cool.. well cya later!
+Say: /quit
+
+Disconnected from chat server.
+</pre>
+<br />
+<p>
+
+<a name="chatclient2example"></a><h4>Client 2</h4>
+<p>
+<b>Listen mode:</b>
+<pre class="console">
+chat localhost -l «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Listen mode
+
+Connecting to chat server... OK!
+
+CHANSERV: Caroline has joined the chat.
+Ian     : Hello Caroline!
+Caroline: Hi Ian.. hows it going?
+Ian     : ok.. you?
+Caroline: I'm pregnant!
+Ian     : cool.. well cya later!
+Caroline: bye
+CHANSERV: Ian has left the chat.
+CHANSERV: Caroline has left the chat.
+^C
+</pre>
+<p>
+<b>Speak mode:</b>
+<pre class="console">
+chat localhost -s «ENTER»
+
+Chat v0.2 (A demo using netLib)
+Designed and coded by Ian Seyler
+
+netLib: Start Windows networking (v0.4)
+
+Speak mode
+
+Enter your nickname (Max 8 chars): Caroline
+Your nickname is 'Caroline'
+
+Connecting to chat server... OK!
+
+Say: Hi Ian.. hows it going?
+Say: I'm pregnant!
+Say: bye
+Say: /quit
+
+Disconnected from chat server.
+</pre>
+<p>
+
+<br />
+<p>
+Last updated Aug 30, 2007 @ 10:21AM
+<br />
+</p>
+
+<!-- END BODY CONTENT -->
+
+				</div> <!-- end #center -->
+			</div> <!-- end #center-in -->
+		</div> <!-- end #content-wrap -->
+		<div id="footer-wrap">
+			<div id="footer-in">
+				<ul id="nav-footer">
+					<li class="left">copyright &copy; Ian Seyler 2007. All rights reserved.</li>
+				</ul>
+			</div> <!-- end #footer-in -->
+		</div> <!-- end #footer-wrap -->
+	</div> <!-- end #container -->
+	<br />
+</body>
+</html>

@@ -1,0 +1,40 @@
+Change Log for netLib Network Communication Library
+---------------------------------------------------
+
+v0.4 - 20070830
+-major rework of how netBuffers are used. netBuffers can now store binary information that can be sent between different computer platforms (Endian issues)
+-added netBufferAppendInt8, netBufferAppendInt16, netBufferAppendInt32, netBufferAppendString, netBufferAppendData, netBufferRemoveInt8, netBufferRemoveInt16, netBufferRemoveInt32, netBufferRemoveString, netBufferRemoveData, and netBufferClear functions.
+-separate source files for netSockets (basic functions like connect, listen, accept, send, receive, etc.) and netBuffers (sendbuffer, recvbuffer, appends, removes)
+-Thanks to Brad Fewster for offering tips on a few parts of netLib. "if" statements were altered as well as variable passing to some functions based on his advice
+-added netSetOption function
+-found the command line option to allow for correct functionality in BeOS BONE
+-miscellaneous cleanup of code
+
+v0.3 - 20070626
+-fixed bug in netConnect on Unix. setsockint was not declared as a variable
+-disable the Nagle algorithm by default in netConnect and netAccept
+-changed all library messages to print to stderr instead of stdout
+-added a return value to the netSocket structure. netSock->retval will contain the return value of the last netLib fuction that was called on it
+-added a complete value to the netBuffer structure. netBuff->complete will contain 1 if the whole buffer has been sent/received
+-change to netRecvBuffer so we can not get stuck waiting for more data
+-fixed an issue with netIsSocketWaiting as it was not interpreting the return value propery
+-renamed netIsSocketWaiting to netIsDataPending. The function name is a bit clearer now
+-removed netSelect function. Should be using netIsDataPending instead
+-added a chat demo
+-miscellaneous cleanup of code
+
+v0.2 - 20070424
+-use errno values from operating system
+-added timeout value to netSocket structure
+-added netIsSocketWaiting function, quick version of netSelect
+-added netSetTimeout function to set timeout on a netSocket
+-change: netRecv, netRecvBuffer, and netAccept use netIsSocketWaiting
+-added global verbose option for library
+-bug fix in netListen. Internal call to setsockopt was not working correctly in Windows
+-fixed a small bug in netSendBuffer and netRecvBuffer. At was not being reset in the case of a failed transfer
+-fixed an issue on linux when doing a send(). In v0.1 SIGPIPE was still being tripped. Tested with Ubuntu 7.04
+-added SIGPIPE protection in netConnect for Mac OS X
+-miscellaneous cleanup of code
+
+v0.1 - 20070227
+-Initial public release
